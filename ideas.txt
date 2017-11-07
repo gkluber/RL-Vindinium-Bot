@@ -1,0 +1,10 @@
+use predicting the winner of each game as a policy improvement method (v values)
+
+negative reward for low health per step
+
+channels:
+1 for each player 4
+1 for environment 1 
+1 for tavern 1
+1 for neural gold mines 1 
+1 for gold mines controlled by each player 4
