@@ -40,7 +40,9 @@ class Game:
                 elif (obj == TAVERN):
                     self.taverns_locs.add((row, col))
 
-
+    def get_player_loc(self):
+        for p in self.heroes:
+		    if p.name == 
 
 class Board:
     def __parseTile(self, str):
@@ -72,7 +74,7 @@ class Board:
         x, y = loc
         pos = self.tiles[x][y]
         return (pos != WALL) and (pos != TAVERN) and not isinstance(pos, MineTile)
-
+	
     def to(self, loc, direction):
         'calculate a new location given the direction'
         row, col = loc
