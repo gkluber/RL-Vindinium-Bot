@@ -1,19 +1,16 @@
 from random import choice
 from enum import Enum
+from utils import Pos
+from utils import Player
+from utils import Tile
+from utils import GameState
+from client import Client
+import utils
 import threading
 
 import time
 
-from game import Game
-import tensorflow as tf, import numpy as np
-
-#use direction.value to get num
-class Action(Enum):
-	STAY = 0
-	NORTH = 1
-	EAST = 2
-	SOUTH = 3
-	WEST = 4
+import tensorflow as tf, numpy as np
 
 class ModelParametersCopier(object):
     def __init__(self, online_scope, target_scope):
@@ -34,6 +31,7 @@ class Bot:
 	def __init__(self, sess):
 		self.sess = sess
 
+#TODO
 class RandomBot(Bot):
 	def train(self):
 		self.connection = Client(self, timeout, url, key, mode, self.depth)
@@ -44,10 +42,10 @@ class QBot(Bot):
 		self.save = save #boolean
 		self.learning_rate = learning_rate
 		self.momentum = momentum
-			
+		
+		self.depth = 1
 		self.connection = Client(self, timeout, url, key, mode, self.depth)
 		self.connection_thread = threading.Thread(target=open_connection)
-		self.depth = 2
 		self.replay_memory = []
 		build_model()
 		
@@ -56,19 +54,29 @@ class QBot(Bot):
 	
 	#is called when the client receives the next board state
 	def callback(self, state):
-		with lock:
+		with self.lock:
 			#add to training pool
 			self.replay_memory.append(to_state_matrix(state))
 	
 	def to_state_matrix(self, state):
 		pass
-		
+	
+	'''  
+	TODO -- implement Swish activation function
+	Reference: 
+	Searching for Activation Functions (2017) 
+	https://arxiv.org/abs/1710.05941
+	'''
+	@staticmethod
+	def swish(x):
+		return x*tf.nn.sigmoid(x)
+	
 	def build_model(self):
-		self.input_height = 28
-		self.input_width = 28
-		self.input_channels = 15*self.depth
+		self.input_height = 12
+		self.input_width = 12
+		self.input_channels = 23*self.depth
 		self.conv_n_maps = [32, 64, 64]
-		self.conv_kernel_sizes = [(5,5), (3,3), (3,3)]
+		self.conv_kernel_sizes = [(3,3), (3,3), (2,2)]
 		self.conv_strides = [2,1,1]
 		self.conv_paddings = ["SAME"]*3
 		self.conv_activation = [tf.nn.relu] * 3
@@ -242,16 +250,13 @@ class QBot(Bot):
 			
 			#check the status of the game
 			
-	#returns true if legal, false otherwise
-	#direction in the form of enum value
-	def legal(self, board, action):
-		if action.value == 0:
+	#walls is matrix
+	def legal(self, pos, walls: np.ndarray, action) -> bool:
+		direction_vec = Pos.get_pos_vector(action.value)
+		candidate = pos.clone().add(direction_vec)
+		if walls[candidate.x][candidate.y] == 0:
 			return True
-		elif board.passable(action.value-1) #TODO
-	
-	def next_pos(self, action):
-		#get current player pos 
-		pass
+		return False
 		
 	def open_connection(self):
 		while True:

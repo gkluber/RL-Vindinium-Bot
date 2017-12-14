@@ -2,18 +2,20 @@ import os, numpy as np, tensorflow as tf
 import sys
 import requests
 import re
-from model import QBot
+from bot import QBot
 
 flags = tf.app.flags
 flags.DEFINE_boolean("save", True, "If True, then save the model")
 flags.DEFINE_float("learning_rate", 0.1, "Learning rate of the momentum optimizer")
 flags.DEFINE_float("momentum",0.9,"Momentum of the momentum optimizer")
 flags.DEFINE_integer("timeout", 15, "Amount of time spent before the POST request times out (in seconds)")
-flags.DEFINE_integer("number_of_turns",10,"Number of turns per game (if practice mode)")
+flags.DEFINE_integer("number_of_turns",300,"Number of turns per game (if practice mode)")
 flags.DEFINE_integer("save_iterations", 50, "Number of iterations per save")
 flags.DEFINE_string("mode","training","Either training or arena")
 flags.DEFINE_string("key","#####","Vindinium bot ID")
 flags.DEFINE_string("url","http://vindinium.org","Server URL")
+#TODO: Implement checkpoint_dir
+flags.DEFINE_string("checkpoint_dir", "checkpoints", "Directory that checkpoints will be saved in and loaded from")
 
 '''flags = tf.app.flags
 flags.DEFINE_boolean("train",True,"If True, then train the model with the given number of epochs")

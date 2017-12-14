@@ -6,7 +6,7 @@ import sys
 import requests
 import re
 
-class Client():
+class Client:
 	
 	def __init__(self, bot, timeout, server_url, key, mode, number_of_turns, depth):
 		self.bot = bot
@@ -69,10 +69,10 @@ class Client():
 			return False
 	
 	#wraps the next state in a Game object
-	def next(self)
+	def next(self):
 		if not hasNext():
 			return None
-		else
+		else:
 			temp = self.stateBuffer[self.depth-1]
 			del self.stateBuffer[self.depth-1]
 			#will return the most recent state first in the array

@@ -1,6 +1,6 @@
 import random
 import numpy as np
-from sets import Set
+from enum import Enum
 from queue import Queue
 
 #allows for fast self-play on randomly generated maps
@@ -20,11 +20,10 @@ class FakeServer:
 		
 
 class Config:
-	def __init__(self, map: Map, turns = 1200: int):
+	def __init__(self, map: Map, turns = 1200: int, gen_config: GenConfig):
 		self.map_config = map
 		self.turns = turns
-	
-	def 
+		self.gen_config = gen_config
 	
 class Generator:
 	def __init__(self):
@@ -39,11 +38,11 @@ class Generator:
 		draft = generate_board(
 	
 	#outputs unrolled map
-	def generate_board(config: Config) -> np.ndarray:
-		
+	def generate_board(config: GenConfig) -> np.ndarray:
+		pass
 	
 	#returns 1/4 of the board
-	def sector(config: Config) -> np.ndarray:
+	def sector(config: GenConfig) -> np.ndarray:
 		length = config.size ^ 2
 		sector = np.zeros(length)
 		for x in range(length):
@@ -58,7 +57,7 @@ class Generator:
 		second = first[::-1]
 		return np.append(first,second)
 		
-	def generate_spawn_pos(config: Config, board: np.ndarray, attempts = 1: int):
+	def generate_spawn_pos(config: GenConfig, board: np.ndarray, attempts = 1: int):
 		trial = Pos(random.randrange(config.size / 2 - 2), random.randrange(config.size / 2 - 2))
 		if validate_spawn_pos(
 	
@@ -66,18 +65,18 @@ class Generator:
 		trav = Traverse(board, pos).traverse()
 		return pos.clone().mirrorX().vectorize() in trav and pos.clone().mirrorY().vectorize() in trav
 
-class Config:
+class GenConfig:
 	def __init__(self, size: int, wall_percent: int, mine_percent: int):
 		self.size = size
 		self.wall_percent = wall_percent
 		self.mine_percent = mine_percent
 	
 	@staticmethod
-	def rand_config() -> Config:
+	def rand_config() -> GenConfig:
 		size = 10 + 2 * random.randrange(10)
 		wall_percent = 10 + random.randrange(32)
 		mine_percent = 3 + random.randrange(7)
-		return Config(size, wall_percent, mine_percent)
+		return GenConfig(size, wall_percent, mine_percent)
 
 class Player(Enum):
 	P1 = object()
@@ -94,10 +93,10 @@ class Traverse:
 		self.pos = pos
 		
 	def traverse(self):
-		return self.__traverse([self.pos], Set(), [])
+		return self.__traverse([self.pos], set(), [])
 	
 	#Breadth first search
-	def __traverse(self, toVisit: list, visited: Set, accumulator: list) -> list:
+	def __traverse(self, toVisit: list, visited: set, accumulator: list) -> list:
 		if len(toVisit)==0:
 			return accumulator
 		else:
