@@ -1,14 +1,12 @@
-Should work with python2 and python3.
+# Heathcliff: The Vindinium Bot
+Runs on Python 3. The project was tested on WinPy, so it may be unstable with vanilla Python 3.
 
-Install deps:
+### Installing the Requirements:
 
     pip install -r requirements.txt
 
 Run with:
 
-    python client.py <key> <[training|arena]> <number-of-games-to-play> [server-url]
+    python main.py --flags1 [value1] --flag2 [value2] (...)
 
-Examples:
-
-    python client.py mySecretKey arena 10
-    python client.py mySecretKey training 10 http://localhost:9000
+Repository WIP.
